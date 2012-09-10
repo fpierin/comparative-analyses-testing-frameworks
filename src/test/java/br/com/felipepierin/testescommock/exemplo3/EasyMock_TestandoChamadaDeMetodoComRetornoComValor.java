@@ -1,4 +1,4 @@
-package br.com.felipepierin.testescommock.exemplo6;
+package br.com.felipepierin.testescommock.exemplo3;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -7,25 +7,24 @@ import static org.easymock.EasyMock.verify;
 
 import org.junit.Test;
 
-public class EasyMock_TestandoChamadaDeMetodoComLancamentoDeExcecao {
+public class EasyMock_TestandoChamadaDeMetodoComRetornoComValor {
 
   private final RepositorioDeAssinantes repositorioDeAssinantes = createMock(RepositorioDeAssinantes.class);
   private final Editor editor = new Editor(repositorioDeAssinantes);
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void fazerUmAssinanteReceberUmaMensagemConhecida() throws Exception {
+    final Assinante assinante = createMock(Assinante.class);
     final String minhaMensagem = "mensagem qualquer";
-
-    final Throwable throwable = new RuntimeException();
     
-    expect(repositorioDeAssinantes.obterAssinante())
-      .andThrow(throwable);
+    expect(repositorioDeAssinantes.obterAssinante()).andReturn(assinante);
+    assinante.recebe(minhaMensagem);
     
-    replay(repositorioDeAssinantes);
+    replay(repositorioDeAssinantes, assinante);
     
     editor.publicar(minhaMensagem);
     
-    verify(repositorioDeAssinantes);
+    verify(assinante);
   }
 
 }

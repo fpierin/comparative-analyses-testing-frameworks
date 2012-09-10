@@ -1,4 +1,4 @@
-package br.com.felipepierin.testescommock.exemplo6;
+package br.com.felipepierin.testescommock.exemplo3;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -6,8 +6,11 @@ import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import br.com.felipepierin.testescommock.exemplo3.Assinante;
+import br.com.felipepierin.testescommock.exemplo3.Editor;
+
 @RunWith(JMock.class)
-public class JMock_TestandoChamadaDeMetodoComLancamentoDeExcecao {
+public class JMock_TestandoChamadaDeMetodoComRetornoComValor {
 
   private final Mockery contexto = new Mockery();
 
@@ -15,13 +18,15 @@ public class JMock_TestandoChamadaDeMetodoComLancamentoDeExcecao {
       .mock(RepositorioDeAssinantes.class);
   private final Editor editor = new Editor(repositorioDeAssinantes);
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void fazerUmAssinanteReceberUmaMensagemConhecida() {
     final String minhaMensagem = "mensagem";
+    final Assinante assinante = contexto.mock(Assinante.class);
 
     contexto.checking(new Expectations() {{
         oneOf(repositorioDeAssinantes).obterAssinante(); 
-        will(throwException(new RuntimeException()));
+        will(returnValue(assinante));
+        oneOf(assinante).recebe(minhaMensagem);
     }});
 
     editor.publicar(minhaMensagem);
